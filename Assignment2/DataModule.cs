@@ -1,0 +1,176 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Data.OleDb;
+
+namespace Assignment2
+{
+    public partial class DataModule : Form
+    {
+        //VARIABLE DECLARATIONS
+        public DataTable ownerDataTable;
+        public DataTable equipmentDataTable;
+        public DataTable serviceDataTable;
+        public DataTable serviceTypeDataTable;
+        public DataTable serviceTypeEquipmentDataTable;
+        public DataTable vehicleDataTable;
+        public DataView ownerView;
+        public DataView equipmentView;
+        public DataView serviceView;
+        public DataView serviceTypeView;
+        public DataView serviceTypeEquipmentView;
+        public DataView vehicleView;
+
+        //CONSTRUCTOR
+        /// <summary>
+        /// This is the constructor for the dataModule class is initializes the DataSet and the object variables.
+        /// </summary>
+        public DataModule()
+        {
+            InitializeComponent();
+            greenDataSet.EnforceConstraints = false;
+            ownerDataAdapter.Fill(greenDataSet);
+            equipmentDataAdapter.Fill(greenDataSet);
+            serviceDataAdapter.Fill(greenDataSet);
+            serviceTypeDataAdapter.Fill(greenDataSet);
+            serviceTypeEquipmentDataAdapter.Fill(greenDataSet);
+            vehicleDataAdapter.Fill(greenDataSet);
+            ownerDataTable = greenDataSet.Tables["OWNER"];
+            equipmentDataTable = greenDataSet.Tables["EQUIPMENT"];
+            serviceDataTable = greenDataSet.Tables["SERVICE"];
+            serviceTypeDataTable = greenDataSet.Tables["SERVICETYPE"];
+            serviceTypeEquipmentDataTable = greenDataSet.Tables["SERVICETYPEEQUIPMENT"];
+            vehicleDataTable = greenDataSet.Tables["VEHICLE"];
+            greenDataSet.EnforceConstraints = true;
+            serviceView = new DataView(serviceDataTable);
+            serviceView.Sort = "VehicleID ASC";
+            serviceTypeView = new DataView(serviceTypeDataTable);
+            serviceTypeView.Sort = "ServiceTypeID ASC";
+            ownerView = new DataView(ownerDataTable);
+            ownerView.Sort = "OwnerID ASC";
+            vehicleView = new DataView(vehicleDataTable);
+            vehicleView.Sort = "VehicleID ASC";
+            serviceTypeEquipmentView = new DataView(serviceTypeEquipmentDataTable);
+            serviceTypeEquipmentView.Sort = "ServiceTypeID ASC";
+        }
+
+        //UPDATE FUNCTIONS
+        //These functions update then various tables in the database using DataTable objects
+        /// <summary>
+        /// This function updates the OWNER Table in the Access Database File.
+        /// </summary>
+        public void UpdateOwner()
+        {
+            ownerDataAdapter.Update(ownerDataTable);
+        }
+        /// <summary>
+        /// This function updates the EQUIPMENT Table in the Access Database File.
+        /// </summary>
+        public void UpdateEquipment()
+        {
+            equipmentDataAdapter.Update(equipmentDataTable);
+        }
+        /// <summary>
+        /// This function updates the SERVICETYPE Table in the Access Database File.
+        /// </summary>
+        public void UpdateServiceType()
+        {
+            serviceTypeDataAdapter.Update(serviceTypeDataTable);
+        }
+        /// <summary>
+        /// This function updates the VEHICLE Table in the Access Database File.
+        /// </summary>
+        public void UpdateVehicle()
+        {
+            vehicleDataAdapter.Update(vehicleDataTable);
+        }
+        /// <summary>
+        /// This function updates the SERVICE Table in the Access Database File.
+        /// </summary>
+        public void UpdateService()
+        {
+            serviceDataAdapter.Update(serviceDataTable);
+        }
+        /// <summary>
+        /// This function updates the SERVICETYPEEQUIPMENT Table in the Access Database File.
+        /// </summary>
+        public void UpdateServiceTypeEquipment()
+        {
+            serviceTypeEquipmentDataAdapter.Update(serviceTypeEquipmentDataTable);
+        }
+
+        //TODO: Comment and understand these.
+        //FIX -1 PROBLEM FUNCTIONS
+        //These functions fix the -1 problem that occurs when adding new rows to the database using the data adapters.
+
+        /// <summary>
+        /// This function fixes the -1 error in the owner table by 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ownerDataAdapter_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
+        {
+            // initialize a variable and a command to retrieve the last identity value created in the owner table.
+            int newID = 0;
+            // @@IDENTITY returns the last identity value (primary key) that was generated by a statement.
+            OleDbCommand getLastIdentityCommand = new OleDbCommand("SELECT @@IDENTITY", greenConnection);
+
+            if (e.StatementType == StatementType.Insert)
+            {
+                // if the statement was an insert statement 
+                newID = (int)getLastIdentityCommand.ExecuteScalar();
+                e.Row["OwnerID"] = newID;
+            }
+        }
+        //equipment
+        private void equipmentDataAdapter_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
+        {
+            // initialize a variable and a command to retrieve the last identity value created in the equipment table.
+            int newID = 0;
+            // @@IDENTITY returns the last identity value (primary key) that was generated by a statement.
+            OleDbCommand getLastIdentityCommand = new OleDbCommand("SELECT @@IDENTITY", greenConnection);
+
+            if (e.StatementType == StatementType.Insert)
+            {
+                // if the statement was an insert statement 
+                newID = (int)getLastIdentityCommand.ExecuteScalar();
+                e.Row["EquipmentID"] = newID;
+            }
+        }
+        //servicetype
+        private void serviceTypeDataAdapter_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
+        {
+            // initialize a variable and a command to retrieve the last identity value created in the servicetype table.
+            int newID = 0;
+            // @@IDENTITY returns the last identity value (primary key) that was generated by a statement.
+            OleDbCommand getLastIdentityCommand = new OleDbCommand("SELECT @@IDENTITY", greenConnection);
+
+            if (e.StatementType == StatementType.Insert)
+            {
+                // if the statement was an insert statement 
+                newID = (int)getLastIdentityCommand.ExecuteScalar();
+                e.Row["ServiceTypeID"] = newID;
+            }
+        }
+        //vehicle
+        private void vehicleDataAdapter_RowUpdated(object sender, OleDbRowUpdatedEventArgs e)
+        {
+            // initialize a variable and a command to retrieve the last identity value created in the vehicle table.
+            int newID = 0;
+            // @@IDENTITY returns the last identity value (primary key) that was generated by a statement.
+            OleDbCommand getLastIdentityCommand = new OleDbCommand("SELECT @@IDENTITY", greenConnection);
+
+            if (e.StatementType == StatementType.Insert)
+            {
+                // if the statement was an insert statement 
+                newID = (int)getLastIdentityCommand.ExecuteScalar();
+                e.Row["VehicleID"] = newID;
+            }
+        }
+    }
+}
